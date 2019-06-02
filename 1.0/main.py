@@ -1,4 +1,6 @@
+import random
 import pyglet
+from pyglet.sprite import Sprite
 from pyglet.window import key, mouse # Useless right now but we'll need it later.
 
 # Change pyglet resource path.
@@ -53,10 +55,49 @@ deetrimino_T = [
     sprite_sheet.get_region(x = 128, y = 144, width = 64, height = 96)
 ]
 
+all_deetriminos = [
+    deetrimino_I,
+    deetrimino_J,
+    deetrimino_L,
+    deetrimino_O,
+    deetrimino_S,
+    deetrimino_Z,
+    deetrimino_T
+]
+
+current = None
+current_type = None
+index = 0
+
+@window.event
+def on_key_press(symbol, modifier):
+    global current
+    global current_type
+    global index
+
+    if symbol == key.L:
+        index = 0
+        current_type = random.choice(all_deetriminos)
+        current = Sprite(img = current_type[index], x = 360, y = 360)
+    elif symbol == key.Z:
+        if index != 0:
+            index -= 1
+        else:
+            index = len(current_type) - 1
+        current = Sprite(img = current_type[index], x = 360, y = 360)
+    elif symbol == key.X:
+        if index != len(current_type) - 1:
+            index += 1
+        else:
+            index = 0
+        current = Sprite(img = current_type[index], x = 360, y = 360)
+
 
 @window.event
 def on_draw():
     window.clear()
+    if current:
+        current.draw()
 
 window.push_handlers(pyglet.window.event.WindowEventLogger()) # This prints every event onto the console.
 pyglet.app.run()
